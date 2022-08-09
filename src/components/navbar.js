@@ -13,13 +13,8 @@ import {
   import AdbIcon from '@mui/icons-material/Adb';
   import MenuIcon from '@mui/icons-material/Menu';
   import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
-  //const pages = ['Sobre mí', 'Mis trabajos', 'Habilidades', 'Contacto'];
-  const pages = [
-    { text: 'Sobre mí', href: '/AboutMe' },
-    { text: 'Mis trabajos', href: '/Works' },
-    { text: 'Habilidades', href: '/Skills' },
-    { text: 'Contacto', href: '/Contact' }
-  ]
+  const pages = ['Sobre mí', 'Mis trabajos', 'Habilidades', 'Contacto'];
+
 
   const settings = [];
 
@@ -131,7 +126,7 @@ export default function Navbar()
                 sx={{ my: 2, color: "text.primary", display: "block" }}
                
               >
-                {page.text}
+                {page}
               </Button>
             ))}
           </Box>
