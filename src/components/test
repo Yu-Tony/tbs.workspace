@@ -1,0 +1,335 @@
+  /*--------------------------IMPORTS--------------------- */
+  import { Component, React ,useRef, useEffect, useState } from "react";
+  import {Grid,  CardContent, Divider, Chip, Link} from "@mui/material"
+  import LinearProgress from '@mui/material/LinearProgress';
+  import AppBar from '@mui/material/AppBar';
+  import Box from '@mui/material/Box';
+  import Toolbar from '@mui/material/Toolbar';
+  import Typography from '@mui/material/Typography';
+  import IconButton from '@mui/material/IconButton';
+  import MenuIcon from '@mui/icons-material/Menu';
+  
+  
+  import { motion , AnimateSharedLayout, AnimatePresence } from "framer-motion"
+  import { BrowserRouter as Router, Route } from "react-router-dom";
+  import { Item } from "../components/itemWebPages";
+  import { List } from "../components/listWebPages";
+  
+  import move from "lodash-move";
+  import "../pages/HomeAssets/styles.scss"
+  
+  
+  import Image from 'mui-image'
+  import MainComputer from './HomeAssets/computerMain.png';
+  import ProfilePic from './HomeAssets/profilePic.png';
+  
+  function LinearProgressWithLabel(props) {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ width: '100%', mr: 1 }}>
+          <LinearProgress variant="determinate" {...props} />
+        </Box>
+        <Box sx={{ minWidth: 35 }}>
+          <Typography variant="body2" color="text.secondary">{`${Math.round(
+            props.value,
+          )}%`}</Typography>
+        </Box>
+      </Box>
+    );
+  }
+  
+  const cards = [
+    // this only change in the first render
+    { id: 1, title: "Cream Dream", category: "Fantasy", published: "2001" },
+    { id: 2, title: "zOMG", category: "Fantasy", published: "2002" },
+    { id: 3, title: "Nuestra tecnologia", category: "Action", published: "2013" },
+    { id: 4, title: "ACodemia", category: "Action", published: "2013" },
+    { id: 5, title: "ACodemia", category: "Action", published: "2013" },
+    { id: 6, title: "ACodemia", category: "Action", published: "2013" },
+    { id: 7, title: "ACodemia", category: "Action", published: "2013" },
+    { id: 8, title: "ACodemia", category: "Action", published: "2013" },
+    { id: 9, title: "ACodemia", category: "Action", published: "2013" },
+    { id: 10, title: "ACodemia", category: "Action", published: "2013" }
+  ];
+  const cardVariants = {
+    selected: {
+      rotateY: 0,
+      scale: 1.1,
+      transition: { duration: .35 },
+      zIndex: 10,
+      boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px'
+    },
+    notSelected: i => ({
+      rotateY: i * 5,
+      scale: 1 - Math.abs(i * 0.15),
+      x: i ? i * 50 : 0,
+      opacity: 1 - Math.abs(i * .15),
+      zIndex: 10 - Math.abs(i),
+      boxShadow: 'rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px',
+      transition: { duration: .35 }
+    })
+  }
+  
+  
+  const preventDefault = (event) => event.preventDefault();
+    export default function Home(){
+  
+      const [selectedCard, setSelectedCard] = useState(null);
+      const [{ 
+        startX,
+        startScrollLeft,
+        isDragging
+      }, setDragStart] = useState({ 
+        startX: undefined, 
+        startScrollLeft: undefined, 
+        isDragging: false
+      });
+      const containerRef = useRef();
+      const cardRefs = useRef(new Array());
+      useEffect(() => {
+        const { scrollWidth, clientWidth } = containerRef.current;
+        const halfScroll = (scrollWidth - clientWidth) / 2;
+        containerRef.current.scrollLeft = halfScroll;
+      }, [containerRef.current]); 
+      const handleMouseDown = e => {
+        setDragStart({ 
+          startX: e.pageX - containerRef.current.offsetLeft,
+          startScrollLeft: containerRef.current.scrollLeft,
+          isDragging: true
+        });
+      }
+      const handleMouseMove = e => {
+        if (!isDragging || selectedCard) return;
+        const x = e.pageX - containerRef.current.offsetLeft;
+        const walk = x - startX;
+        containerRef.current.scrollLeft = startScrollLeft - walk;
+      }
+      const selectCard = card => {
+        setSelectedCard(selectedCard ? null : card);
+        
+        if (card && !selectedCard) {
+          cardRefs.current[card - 1].scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'center'
+          }); 
+        }
+      }
+      const handleCardMouseUp = (e, card) => {
+        if (isDragging) {
+          const x = e.pageX - containerRef.current.offsetLeft;
+          const walk = x - startX;
+          if (Math.abs(walk) < 5) selectCard(card);
+        } else selectCard(card);
+      }
+      
+  
+      return(
+  
+        <Grid container
+        spacing={0}
+        alignItems="center"
+        justifyContent="center"
+        style={{ minHeight: '100vh' }}
+        sx={{bgcolor: 'background.main', color:'text.primary', padding:'5%'}}  >
+       
+          <Grid item xs={12} md={12}  sx={{ width: '100%', maxWidth: 700 ,  textAlign: 'center'}}>
+          
+              
+            <Typography variant="h6" gutterBottom component="div" > Buenos días / tardes / noches</Typography>
+            <Typography variant="h4" gutterBottom component="div"> Soy Nahomi Soto, también conocido como Teb</Typography>
+            <Typography variant="h4" gutterBottom component="div"> Soy programador  <Typography variant="h4" fontWeight='bold' display='inline'>full stack</Typography> </Typography>
+            <Typography variant="h6" gutterBottom component="div">   Puedo realizar paginas web, aplicaciones móviles y videojuegos. Así como también edición básica de imágenes, video y dibujos. </Typography>
+  
+            <Grid container>
+  
+              <Grid item sm={0} md={4}>
+              </Grid>
+              <Grid item sm={12} md={4}>
+                <Image src={MainComputer} duration={0} alt="Dibujo de una computadora con varios componentes alrededor" fit="cover"/>
+              </Grid>
+            </Grid>          
+  
+          </Grid>
+  
+          <Grid item xs={12}>
+            <Divider>
+              <Chip variant="outlined" label="Creador de esta pagina" />
+            </Divider>
+  
+          </Grid>
+          
+          <Grid sx={{ width: '100%', maxWidth: 700 ,  textAlign: 'center', paddingTop: '1%'}}>
+          
+            <Grid container sx={{ paddingTop: '5%'}} textAlign={"left"}>
+  
+              <Grid item xs={12} md={6} >
+                <Typography variant="h6" gutterBottom component="div" >
+                  Soy Lic. en multimedia y animación digital con especialidad en programación. 
+                  <br/>
+                  Me gusta utilizar la programación para facilitar trabajos de una manera estética y funcional.
+                  <br/>
+                  <br/>
+                  Si me tuviera que describir en 3 palabras sería una persona creativa, paciente y enfocada.
+                  <br/>
+                  <br/>
+                  Mi objetivo es innovar, mejorar y ganar experiencia. De esta manera puedo traer mejor resultados y ayudar de una manera más fácil a quienes colaboren conmigo.
+                  <br/>
+                  <Link component="button" variant="body2" onClick={() => { console.info("I'm a button."); }}>Mas sobre mi</Link>
+                  <br/>
+                  <br/>
+                  <br/>
+                  MAIN:
+                </Typography>
+              </Grid>
+  
+              <Grid item sm={0} md={6}>
+                <Image src={ProfilePic} duration={0} alt="Dibujo de una computadora con varios componentes alrededor" fit="cover"/>
+  
+              </Grid>
+  
+  
+              <Grid item xs={6} md={5}> HTML <LinearProgressWithLabel color="secondary" value={10} /> </Grid>
+              <Grid item xs={0} md={2}></Grid>
+              <Grid item xs={6} md={5}> CSS <LinearProgressWithLabel color="secondary" value={10} /></Grid>
+              <Grid item xs={6} md={5}> JAVASCRIPT <LinearProgressWithLabel color="secondary" value={10} /> </Grid>
+              <Grid item xs={0} md={2}></Grid>
+              <Grid item xs={6} md={5}> REACT <LinearProgressWithLabel color="secondary" value={10} /></Grid>
+              <Grid item xs={6} md={5}> ANGULAR <LinearProgressWithLabel color="secondary" value={10} /> </Grid>
+              <Grid item xs={0} md={2}></Grid>
+              <Grid item xs={6} md={5}> C# <LinearProgressWithLabel color="secondary" value={10} /></Grid>
+              <Grid item xs={6} md={5}> PHP <LinearProgressWithLabel color="secondary" value={10} /> </Grid>
+              <Grid item xs={0} md={2}></Grid>
+              <Grid item xs={6} md={5}> KOTLIN <LinearProgressWithLabel color="secondary" value={10} /></Grid>
+              <br/>
+              <Link component="button" variant="body2" onClick={() => { console.info("I'm a button."); }}>Mas sobre mis habilidades</Link>
+              
+            </Grid>
+                  
+            
+          </Grid>
+  
+          <Grid item xs={12}>
+            <Divider>
+              <Chip variant="outlined" label="Mis trabajos" />
+            </Divider>
+          </Grid>
+  
+          <Grid sx={{ width: '100%', maxWidth: 700 ,  textAlign: 'center', paddingTop: '1%'}}>
+          
+          <Grid container sx={{ paddingTop: '5%'}} textAlign={"left"}>
+  
+            <Grid item xs={12} md={12} >
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  justifyContent: 'center',
+                  typography: 'body1',
+                  '& > :not(style) + :not(style)': {
+                    ml: 2,
+                  },
+                }}
+                onClick={preventDefault}
+              >
+                
+                <Link href="#" underline="hover">
+                  {'Páginas web'}
+                </Link>
+                <Link href="#" underline="hover">
+                  {'Videojuegos'}
+                </Link>
+                <Link href="#" underline="hover">
+                  {'Realidad virtual'}
+                </Link>
+                <Link href="#" underline="hover">
+                  {'Aplicaciones Moviles'}
+                </Link>
+            
+              </Box>
+            </Grid>
+  
+            <header><h1> Paginas web</h1></header>
+            <Grid item sm={12} md={12}>  <Typography variant="h3" gutterBottom component="div" ></Typography></Grid>
+  
+  {/**------------------------------------------------------------------- */}
+  
+  <Grid item md={12}>
+  <div 
+          className="flashcards"
+          onMouseDown={handleMouseDown}
+          onMouseUp={() => setDragStart(prev => ({ ...prev, isDragging: false }))}
+          onMouseMove={handleMouseMove}
+        >
+          <div 
+            className="flashcards__container" 
+            ref={containerRef}
+          >
+            {cards.map((card, i) => (
+              <motion.div 
+                className="card" 
+                key={card}
+                ref={el => cardRefs.current.push(el)}
+                onMouseUp={e => handleCardMouseUp(e, card.id)}
+                variants={cardVariants}
+                animate={selectedCard === card.id ? "selected" : "notSelected"}
+                custom={selectedCard ? selectedCard - card.id : 0}
+              >  
+              
+              <Typography variant="h5" gutterBottom component="div" > {card.title}  </Typography>
+              <Image src={ProfilePic} duration={0} alt="Dibujo de una computadora con varios componentes alrededor" fit="cover"/>
+              
+  
+              </motion.div>
+  
+             
+            ))}
+          </div>
+        </div>
+  </Grid>
+  
+  
+  {/**------------------------------------------------------------------- */}
+          
+            <Grid item sm={6} md={6}>
+              <Typography variant="h5" gutterBottom component="div" > Cream Dream</Typography>
+              <Image src={ProfilePic} duration={0} alt="Dibujo de una computadora con varios componentes alrededor" fit="cover"/>
+            </Grid>
+  
+            <Grid item sm={6} md={6}>
+              <Typography variant="h6" gutterBottom component="div" >  Página web sobre una repostería que está enfocada en que el cliente tenga un rápido servicio. En nuestra página web puedes registrarte o iniciar sesión y realizar una reservación para ir a comer, o puedes ir directamente a las tiendas físicas. En las mesas de nuestra locación puedes encontrar códigos QR los cuales tienen el menú de Cream Dream. Y dentro de la página realizas tur ordenes.</Typography>
+            </Grid>
+  
+            <Grid item sm={6} md={6}>
+              <Typography variant="h5" gutterBottom component="div" >zOMG</Typography>
+              <Image src={ProfilePic} duration={0} alt="Dibujo de una computadora con varios componentes alrededor" fit="cover"/>
+            </Grid>
+  
+            <Grid item sm={6} md={6}>
+              <Typography variant="h6" gutterBottom component="div" > Videojuego online creado con three.js el cual cuenta con un registro en la pagina, un marcador de puntuacion y una manera de compartir tu puntuacion en FB. Es un juego scroller de zombies en el cual debes de mataer a los zombies y avanzar hasta llegar a la meta.</Typography>
+  
+            </Grid>
+  
+            
+          </Grid>
+                
+          
+          </Grid>
+  
+          <Grid item xs={12}>
+            <Divider>
+              <Chip variant="outlined" label="Habilidades" />
+            </Divider>
+          </Grid>
+  
+          <Grid item xs={12}>
+            <Divider>
+              <Chip variant="outlined" label="Contacto" />
+            </Divider>
+          </Grid>
+         
+        </Grid>
+  
+      );
+    }
+    //<a href="https://storyset.com/computer">Computer illustrations by Storyset</a>
